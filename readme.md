@@ -321,90 +321,62 @@ Co se stane v řídicím systému Tecomat Foxtrot, pokud na sběrnici TCL2 omyle
 
 ---
 
-### 5. Simulace řídicího programu v prostředí Teco Mosaic: od teorie k praxi
+### ### 3. Inženýrská konfigurace funkční sestavy PLC Teco a proudová bilance
 
-*Časová dotace: 25–30 minut | :bangbang: Klasifikovaná inženýrská úloha na známky*
+#### Konfigurace komponent z katalogu Teco
 
-Prostředí **Teco Mosaic** umožňuje úplnou softwarovou simulaci cyklického běhu PLC bez fyzického hardware. Simulátor zprostředkovává procesní obraz vstupů a výstupů, odpočítávání časovačů i sledování proměnných v reálném čase – stejně jako skutečný automat. Tato úloha vás provede celým pracovním tokem: od založení projektu přes napsání řídicího algoritmu až po jeho ověření v simulátoru.
+| Pozice | Typ modulu / komponenta | Přesné typové označení Teco | Objednací číslo (Part No.) | Pokryté vstupy a výstupy (DI / DO / AI / PWM / relé) |
+| :--- | :--- | :--- | :--- | :--- |
+| **1** | Spínaný napájecí zdroj 24 V DC na DIN lištu | **PS2-60/27** | TXN 102 12 | Napájení centrály, rozšiřujících modulů a napájených polem snímačů 24 V DC / 2,2 A (integrovaný oddělovač sběrnice CIB) |
+| **2** | Centrální jednotka (CPU) | **CP-2007** | TXI 120 07 | Obsahuje 14× univerzální vstup (využito: 7× AI pro čidla a 7× DI), 10× reléový výstup (využito: 3× relé), sběrnice TCL2, CIB, Ethernet |
+| **3** | Rozšiřující modul 1 (sběrnice TCL2) | **IB-1301** | TXI 113 01 | Obsahuje 12× digitální vstup (DI 24 V DC) pro pokrytí zbývající části indukčních a optických snímačů |
+| **4** | Rozšiřující modul 2 (sběrnice TCL2) | **IB-1301** | TXI 113 01 | Obsahuje 12× digitální vstup (DI 24 V DC) pro dosažení plné kapacity a potřebné projektové rezervy |
+| **5** | Rozšiřující modul 3 (sběrnice TCL2) | **OS-1401** | TXI 114 01 | Obsahuje 12× polovodičový tranzistorový výstup 24 V DC / 0,5 A (využito: 4× DO s podporou PWM + 2× standardní DO) |
+| **6** | Zakončení sběrnice | **Zakončovací člen TCL2** | — | Pasivní prvek (odpor 120 Ω) pro správnou terminaci sběrnice RS-485 |
 
-#### Technologický scénář – čerpací stanice odpadních vod:
+---
 
-Naprogramujte a simulujte v prostředí Teco Mosaic řízení jednoduché **čerpací stanice** s následující logikou:
+#### Vyhodnocení I/O bilance a projektové rezervy
 
-| Signál | Typ | Popis |
-| :--- | :--- | :--- |
-| `di_HladinaDolni` | DI (NC, log. 1 = hladina nad min.) | Plovákový spínač spodní hladiny – chrání čerpadlo před chodem nasucho |
-| `di_HladinaPump` | DI (NO, log. 1 = hladina dosáhla zapínací úrovně) | Plovákový spínač zapínací hladiny |
-| `di_HladinaHavar` | DI (NO, log. 1 = přepad) | Plovákový spínač havarijního přepadu |
-| `di_Porucha` | DI (NC, log. 1 = bez poruchy) | Termistorové ochranné relé motoru |
-| `do_Cerpadlo` | DO | Výstup stykače hlavního čerpadla |
-| `do_Alarm` | DO | Výstup siréna/maják – havarijní stav |
+| Typ signálu | Požadavek linky | Celková kapacita navržené sestavy Teco | Rezerva (počet volných svorek) | Výsledná rezerva v % |
+| :--- | :--- | :--- | :--- | :--- |
+| **Digitální vstupy (DI)** | 23 | 31 *(7 na CPU + 24 na IB-1301)* | 8 | **25,8 %** |
+| **Analogové vstupy (AI: 4–20mA, PT)** | 7 | 7 *(v rámci UI na CPU)* | 0 | **0,0 %** *(Rozšíření možné dokoupením modulů řady AI-13xx)* |
+| **Tranzistorové výstupy (DO tranzistor + PWM)** | 6 | 12 *(na OS-1401)* | 6 | **50,0 %** |
+| **Reléové výstupy (DO relé 230 V)** | 3 | 10 *(na CPU)* | 7 | **70,0 %** |
 
-**Požadovaná logika:**
-- Čerpadlo se **automaticky spustí**, jakmile hladina dosáhne zapínací úrovně (`di_HladinaPump = TRUE`) **a zároveň** je hladina nad minimem (`di_HladinaDolni = TRUE`, NC kontakt) **a zároveň** není žádná porucha motoru (`di_Porucha = TRUE`, NC kontakt).
-- Čerpadlo **automaticky zastaví**, jakmile hladina klesne pod zapínací úroveň (`di_HladinaPump = FALSE`). Implementujte **časové zpoždění vypnutí 10 s** (časovač `TOF`), aby se zabránilo krátkodobým cyklickým startům (tzv. taktování čerpadla).
-- Při havarijním přepadu (`di_HladinaHavar = TRUE`) se **okamžitě spustí alarm** `do_Alarm` a stav se zapíše do remanentní proměnné `b_HavarieDetekce : BOOL RETAIN`. Alarm zůstane aktivní až do ručního resetu operátorem (`btn_Reset`).
-- Při výpadku ochrany motoru (`di_Porucha = FALSE`) se čerpadlo okamžitě zastaví a aktivuje se alarm.
+*Poznámka k celkové koncepci: Sestava bezpečně překračuje minimální požadovanou inženýrskou rezervu 15–20 % u všech kritických binárních tras.*
 
-#### Váš úkol:
+---
 
-1. **Postup při zakládání projektu a HW konfigurace v Mosaicu (doplňte kroky):**
+#### Proudová bilance a dimenzování napájecího zdroje 24 V DC
 
-   Popište, co musíte nastavit v prostředí Teco Mosaic, abyste mohli spustit simulaci, aniž byste měli připojený fyzický PLC:
+Výpočet proudové spotřeby řídicího systému a napájených prvků:
+1. **Vlastní příkon CPU a rozšiřujících modulů:** 8,0 W / 24 V = **0,33 A** *(uvažován max. typický odběr CPU CP-2007 a tří modulů na sběrnici TCL2)*
+2. **Odběr napájených snímačů DI:** 23 snímačů × 10 mA = **0,23 A**
+3. **Odběr zátěží na tranzistorových výstupech se soudobostí $k_s = 0,7$:**  
+   *   Maximální statický proudový odběr akčních členů: (4× PWM ventily × 0,5 A) + (2× signalizační DO × 0,1 A) = 2,2 A  
+   *   Započtení koeficientu soudobosti: 2,2 A × 0,7 = **1,54 A**
+4. **Celkový špičkový provozní proud:** 0,33 A + 0,23 A + 1,54 A = **2,10 A**
 
-   | Krok | Co v Mosaicu nastavit / zkontrolovat | Proč je tento krok nutný |
-   | :--- | :--- | :--- |
-   | **1. Volba cílové platformy** | V HW konfiguraci zvolit centrální jednotku, např. `...` *(např. CP-2007)* | Simulátor musí znát počet a typy I/O svorek |
-   | **2. Aktivace simulátoru** | V menu `...` přepnout komunikaci z „Ethernet / přímé spojení" na `...` | Bez aktivace simulátoru by Mosaic hledal fyzické PLC na síti |
-   | **3. Přiřazení proměnných k I/O svorkám** | V záložce `...` přiřadit proměnnou `di_HladinaDolni` na svorku `...` | Propojuje proměnnou v programu s fyzickým (nebo simulovaným) vstupem |
-   | **4. Spuštění simulace** | Kliknout na tlačítko `...` nebo stisknout klávesovou zkratku `...` | Spustí cyklický běh programu v simulátoru (náhrada za fyzické PLC) |
-   | **5. Sledování proměnných** | Otevřít okno `...` a přidat proměnné `do_Cerpadlo`, `stav`, `timer_TOF` | Umožní sledovat aktuální hodnoty proměnných v každém cyklu |
+**Výběr a zdůvodnění napájecího zdroje:**
+*   **Zvolený zdroj a jmenovitý proud:** Teco **PS2-60/27** (jmenovitý výstupní proud **2,2 A** při trvalém zatížení, špičkově až 2,4 A). 
+*   **Zdůvodnění:** Provozní špička sestavy činí 2,10 A, což zvolený 60W zdroj PS2-60/27 bezpečně pokrývá. Výhodou tohoto systémového zdroje Teco je navíc integrovaný impedanční oddělovač pro sběrnici CIB, což projektantovi šetří náklady a místo v rozvaděči při budoucím nasazení domovní/budovní automatizace. Pro vyšší výkonovou rezervu nebo při navýšení počtu zátěží pole lze použít zdroj **PS2-100/24** (4,2 A).
+*   **Alternativa od jiného výrobce:** Průmyslový na DIN lištu montovatelný zdroj **Mean Well MDR-60-24** (24 V DC, 2,5 A, 60 W), případně prémiový **Phoenix Contact STEP-PS/1AC/24DC/2.5** (2,5 A).
 
-2. **Implementace řídicího algoritmu v jazyce ST:**
+---
 
-   Napište program pro výše popsanou logiku čerpací stanice. Použijte strukturu s remanentní proměnnou a časovačem `TOF`. Vzorová kostra programu:
+#### 🌟 Bonusová otázka k úloze 3: Výhoda Pt1000 oproti Pt100 ve 2vodičovém zapojení
 
-```pascal
-PROGRAM Prg_CerpStation
-VAR
-    di_HladinaDolni  : BOOL; // NC plovák – spodní hladina (log.1 = OK)
-    di_HladinaPump   : BOOL; // NO plovák – zapínací hladina
-    di_HladinaHavar  : BOOL; // NO plovák – havarijní přepad
-    di_Porucha       : BOOL; // NC termistor (log.1 = bez poruchy)
-    btn_Reset        : BOOL; // Ruční reset alarmu operátorem
-    do_Cerpadlo      : BOOL; // Výstup stykače čerpadla
-    do_Alarm         : BOOL; // Výstup majáku / sirény
+**Odpověď:**
+Principem odporového snímače je změna jeho elektrického odporu v závislosti na okolní teplotě. Při **2vodičovém zapojení** se k vnitřnímu odporu samotného čidla přičítá i parazitní odpor přívodních vodičů, což vnáší do měření systematickou chybu (zkreslení výsledné teploty směrem nahoru).
 
-    b_HavarieDetekce : BOOL; // RETAIN – příznak havárie přepadu (přežije výpadek)
-    timer_TOF        : TOF;  // Zpoždění vypnutí čerpadla (10 s)
-END_VAR
+Důvod, proč je **Pt1000** výrazně vhodnější než Pt100 na delší vzdálenosti, spočívá v poměru základního odporu čidla k odporu vedení:
+*   Snímač **Pt100** má při 0 °C odpor pouhých **100 Ω**. Změna odporu činí přibližně **0,385 Ω / °C**. Pokud má přívodní kabel odpor např. 2 Ω, způsobí to chybu měření o více než **5 °C**.
+*   Snímač **Pt1000** má při 0 °C základní odpor **1000 Ω**. Změna odporu činí **3,85 Ω / °C**. Stejný parazitní odpor vedení (2 Ω) zde představuje chybu pouze cca **0,5 °C**.
 
-// === Doplňte implementaci logiky níže ===
+**Závěr:** U čidla Pt1000 je vliv parazitního odporu přívodního kabelu v celkovém naměřeném odporu procentuálně desetinásobně menší, což umožňuje realizovat přesné měření i přes standardní dlouhé 2vodičové vedení bez nutnosti softwarové kompenzace nebo přechodu na nákladnější 3vodičové či 4vodičové zapojení.
 
-// 1. Reset havarijního příznaku operátorem:
-...
-
-// 2. Detekce havarijního přepadu nebo poruchy motoru:
-...
-
-// 3. Podmínka pro spuštění čerpadla (všechny podmínky splněny):
-...
-
-// 4. Řízení výstupu čerpadla přes časovač TOF (zpoždění vypnutí 10 s):
-timer_TOF(IN := ..., PT := T#10s);
-do_Cerpadlo := timer_TOF.Q AND ...;
-
-// 5. Aktivace alarmu:
-do_Alarm := ...;
-
-END_PROGRAM
-```
-
-   - *Váš doplněný kód v ST:*
-```pascal
-// Vložte váš kompletní program:
-...
-```
 
 3. **Ověření chování programu v simulátoru Mosaic (protokol o simulaci):**
 
