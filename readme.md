@@ -31,28 +31,42 @@ Programovatelné automaty (PLC)
 
 *Časová dotace: 10–15 minut | Úvodní orientační a opakovací úloha*
 
-1. **Rozdělení PLC podle oblasti nasazení:**
-   Doplňte do tabulky vhodnou kategorii a konkrétní zástupce vámi vybraných výrobců. Jako vzor poslouží vyplněný řádek pro *Domovní automatizaci a budovy*:
+### 1. Základní vlastnosti a rozdělení PLC
 
-| Oblast nasazení                                           | Vhodná koncepce PLC (kompaktní / modulární / embedded)            | Typický zástupce z portfolia Teco (nebo ekvivalent)                   | Klíčové technické parametry (sběrnice, I/O, napájení, krytí)                                                                                     |
-| :-------------------------------------------------------- | :---------------------------------------------------------------- | :-------------------------------------------------------------------- | :----------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Automatizace domů a budov (HVAC, Smart Home) - VZOR**   | **Kompaktní PLC na DIN lištu s integrovanou instalační sběrnicí** | **Tecomat Foxtrot 2** (např. centrální jednotka CP-2007 nebo CP-2000) | Dvě dvoudrátové sběrnice CIB (Common Installation Bus) s napájením prvků po sběrnici, LAN Ethernet, webserver, nízká spotřeba, relé 230 V / 16 A |
-| **Automatizace jednoúčelových strojů a linek**            | `...`                                                             | `...` *(např. Tecomat TC800)*                                         | `...`                                                                                                                                            |
-| **Rozsáhlé procesní řízení a velké energetické celky**    | `...`                                                             | `...`                                                                 | `...`                                                                                                                                            |
-| **Strojní zařízení s vestavěnou elektronikou (Embedded)** | `...`                                                             | `...` *(např. OEM deskové jednotky Teco řady Foxtrot)*                | `...`                                                                                                                                            |
+#### Rozdělení PLC podle oblasti nasazení
 
-2. **PLC vs. Embedded PLC a další řídicí jednotky:**
-   - Jaký je zásadní rozdíl mezi standardním průmyslovým PLC v krabičce na DIN lištu a tzv. **Embedded PLC**? Co obecně vyjadřuje pojem *embedded* a v jakých dalších typech zařízení se s ním setkáváme?
-     - *Vaše vysvětlení:* `...`
+| Oblast nasazení | Vhodná koncepce PLC (kompaktní / modulární / embedded) | Typický zástupce z portfolia Teco (nebo ekvivalent) | Klíčové technické parametry (sběrnice, I/O, napájení, krytí) |
+| :--- | :--- | :--- | :--- |
+| **Automatizace domů a budov (HVAC, Smart Home)** - *VZOR* | Kompaktní PLC na DIN lištu s integrovanou instalační sběrnicí | Tecomat Foxtrot 2 (např. centrální jednotka CP-2007 nebo CP-2000) | Dvě dvoudrátové sběrnice CIB (Common Installation Bus) s napájením prvků po sběrnici, LAN Ethernet, webserver, nízká spotřeba, relé 230 V / 16 A |
+| **Automatizace jednoúčelových strojů a linek** | Kompaktní nebo střední modulární PLC s rychlou odezvou | Tecomat Foxtrot 2 (s rozšiřujícími moduly) nebo ekvivalent Siemens S7-1200 | Integrované rychlé čítače (HSC), pulzní výstupy pro řízení krokovek/serv, Profinet/EtherCAT, RS-485 (Modbus RTU), napájení 24 V DC, krytí IP20 |
+| **Rozsáhlé procesní řízení a velké energetické celky** | Robustní modulární PLC s možností redundance a hot-swap | Tecomat TC800 (případně ekvivalent Siemens S7-1500 / Allen-Bradley ControlLogix) | Vysokorychlostní systémová sběrnice, optický Ethernet, tisíce I/O bodů, redundantní napájení 24V DC / 230V AC, pokročilá diagnostika, krytí IP20 (v rozvaděči) |
+| **Strojní zařízení s vestavěnou elektronikou (Embedded)** | Embedded PLC – otevřená desková elektronika (OEM) integrovaná přímo do stroje | OEM deskové jednotky Teco řady Foxtrot (např. zakázkové desky CP-29xx) | Sběrnice CIB, integrovaná komunikační rozhraní (CAN, RS-485), I/O šité na míru danému stroji, napájení 24 V DC, bez krytí (krytím je samotný stroj / IP00) |
 
-   - Doplňte do přehledové tabulky význam zkratek a oblast jejich nasazení:
+---
 
-| Zkratka      | Co zkratka znamená (anglicky / česky) | Pro jakou oblast řízení se primárně využívá                        | Typický operační / řídicí systém                 |
-| :----------- | :------------------------------------ | :----------------------------------------------------------------- | :----------------------------------------------- |
-| **iPC**      | Industrial PC / Průmyslové PC         | Vizualizace SCADA, řízení rozsáhlých technologických uzlů, SoftPLC | Průmyslový OS (Windows IoT Enterprise, Linux RT) |
-| **NC / CNC** | `...`                                 | `...`                                                              | `...`                                            |
-| **MCU**      | `...`                                 | `...`                                                              | `...` *(bare-metal bez OS nebo RTOS)*            |
-| **SoC**      | System on a chip                      | `...`                                                              | `...`                                            |
+#### PLC vs. Embedded PLC a další řídicí jednotky
+
+**Zásadní rozdíl mezi standardním průmyslovým PLC a Embedded PLC:**
+Standardní průmyslové PLC je hotový, certifikovaný produkt v zapouzdřené krabičce (nejčastěji s krytím IP20) připravený k okamžité montáži na DIN lištu do rozvaděče. Má pevně definované mechanické i elektrické vlastnosti. **Embedded PLC** (vestavné PLC) se dodává nejčastěji jako holá deska plošných spojů (OEM) bez vnějšího pouzdra. Je navrženo k přímé vestavbě do mechanických konstrukcí jiných zařízení (např. tepelná čerpadla, vzduchotechnické jednotky, automaty). Nabízí vyšší flexibilitu v integraci a nižší cenu při sériové výrobě.
+
+**Co obecně vyjadřuje pojem embedded a v jakých dalších typech zařízení se s ním setkáváme:**
+Pojem **embedded** (vestavěný / jednoúčelový) vyjadřuje, že počítačový nebo řídicí systém je pevnou součástí většího technického celku, pro který vykonává specifickou, předem definovanou funkci. Uživatel ho často ani nevnímá jako klasický počítač. Setkáváme se s ním v:
+* **Domácích spotřebičích** (pračky, mikrovlnky, chytré chladničky)
+* **Automobilovém průmyslu** (řídicí jednotky motoru ECU, ABS, infotainment)
+* **Spotřební elektronice** (chytré televizory, Wi-Fi routery, chytré hodinky)
+* **Lékařských přístrojích** (kardiostimulátory, infuzní pumpy)
+
+---
+
+#### Přehledová tabulka zkratek a oblastí nasazení
+
+| Zkratka | Co zkratka znamená (anglicky / česky) | Pro jakou oblast řízení se primárně využívá | Typický operační / řídicí systém |
+| :--- | :--- | :--- | :--- |
+| **iPC** | Industrial PC / Průmyslové PC | Vizualizace SCADA, řízení rozsáhlých technologických uzlů, SoftPLC | Průmyslový OS (Windows IoT Enterprise, Linux RT) |
+| **NC / CNC** | Numerical Control / Computer Numerical Control (Počítačové číslicové řízení) | Řízení obráběcích strojů (frézky, soustruhy), laserů, robotických ramen a precizního polohování | Dedikovaný real-time OS (např. SINUMERIK, Fanuc OS, LinuxCNC) |
+| **MCU** | Microcontroller Unit / Mikroprocesorový kontrolér (jednočipový počítač) | Řízení jednoduchých podsystémů, senzorů, akčních členů a vestavné spotřební elektroniky | Bare-metal (kód běží přímo na hardwaru bez OS) nebo RTOS (FreeRTOS, Zephyr) |
+| **SoC** | System on a Chip / Systém na čipu | Výkonná vestavná zařízení, IoT brány, kamerové systémy s analýzou obrazu, Edge AI | Vestavěný Linux (Yocto, Ubuntu Core), Android, případně komplexní RTOS |
+
 
 > :key: **Vysvětlení pojmů a odborné zdroje:**
 > - **PLC (Programmable Logic Controller):** Průmyslový mikropočítačový systém určený pro deterministické řízení technologických procesů v reálném čase. Vyznačuje se vysokou odolností proti rušení, modulární koncepcí a cyklickým vykonáváním programu.
