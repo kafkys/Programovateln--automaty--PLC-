@@ -219,83 +219,59 @@ Důvod, proč je **Pt1000** výrazně vhodnější než Pt100 na delší vzdále
 
 ### 4. Provozní diagnostika PLC, měření multimetrem a troubleshooting v IDE Mosaic
 
-*Časová dotace: 25–30 minut | :bangbang: Klasifikovaná inženýrská úloha na známky*
+#### Diagnostika podle stavových kontrolek (LED) a displeje centrální jednotky Teco
 
-Jste v roli servisního inženýra na lince řízené automatem **Tecomat Foxtrot**. Linka nečekaně zastavila cyklus. Na operátorském panelu svítí alarm „PORUCHA ČERPÁNÍ – TLAKOVÁ ZTRÁTA“, na centrální jednotce PLC bliká červená LED kontrolka `ERR` a čerpadlo nereaguje na povely.
-
-#### Příklad vzorového diagnostického protokolu (dobrá servisní praxe):
-> *Vzorový postup při nefunkčním digitálním snímači:*
-> 1. *Kontrola stavové LED na svorce modulu:* Vizuální pohled na LED vstupu DI2 – LED nesvítí, přestože je válec v poloze sepnutí.
-> 2. *Měření digitálním multimetrem:*
->    - Nastaven rozsah měření DC napětí (200 V DC).
->    - Černý hrot COM připojen na nulový potenciál (svorka GND / 0 V), červený hrot na svorku napájení snímače (+24 V DC) -> naměřeno 24,2 V DC (napájení senzoru je v pořádku).
->    - Červený hrot přemístěn na signálovou svorku vstupu DI2 -> naměřeno 0,3 V DC (logická 0).
-> 3. *Závěr měření:* Vadný spínací tranzistor v indukčním senzoru nebo přerušený signálový kabel v energetickém řetězu linky.
-
-#### Váš úkol:
-
-1. **Diagnostika podle stavových kontrolek (LED) a displeje centrální jednotky Teco:**
-   - Doplňte do tabulky význam signalizace na čelním panelu centrální jednotky Foxtrot (CP-2000 / CP-2091):
-
-| Signalizační prvek na PLC | Stav (barva / svit)     | Provozní význam (co stav znamená pro servisního technika)   |
-| :------------------------ | :---------------------- | :---------------------------------------------------------- |
-| **RUN**                   | Zelená, trvale svítí    | Uživatelský program v PLC běží v normálním cyklickém režimu |
-| **HALT / STOP**           | Žlutá / oranžová, svítí | `...`                                                       |
-| **ERR / FAULT**           | Červená, bliká          | `...`                                                       |
-| **ERR / FAULT**           | Červená, trvale svítí   | `...`                                                       |
-| **ETH (Link/Act)**        | Zelená/žlutá, bliká     | `...`                                                       |
-
-2. **Troubleshooting v elektrickém zapojení pomocí digitálního multimetru:**
-   - Upevněte na DIN lištu PLC a podle parametrů (viz technický list) vyberte vhodný zdroj napájení.
-   - Zapojte napájení PLC (než zapojíte 230 V AC zapojení proměřte).
-   - Popište přesný a bezpečný metodický postup (kam připojíte měřicí hroty, jaký rozsah a veličinu na multimetru nastavíte; alespoň některé varianty bezpečně nasimulovat na PLC a zdroji, nejspíš budete potřebovat navázat komunikaci s programovacím prostředím, založit program a HW konfiguraci, abyste mohli ovládat výstupy a číst vstupy):
-     - **A. Detekce tvrdého zkratu mezi svorkami +24 V DC a 0 V (GND) před zapnutím jističe:**
-       - *Postup:* `...` *(pozor: zařízení musí být zcela bez napětí, měření impedance/kontinuity)*
-     - **B. Ověření spečených kontaktů výstupního relé DO při vypnutém napájení řízení:**
-       - *Postup:* `...`
-     - **C. Diagnostika napájecího zdroje a napájení PLC (ověření správného napětí 24 V DC):**
-	   - *Postup:* `...` *(zařízení pod napětím, měření stejnosměrného napětí – hroty na svorkách zdroje / PLC napájení +24 V a 0 V, vhodný rozsah DC napětí, kontrola ripple/stability)*
-	- **D. Diagnostika vstupů a výstupů PLC (ověření napětí / kontinuity na DI/DO):**
-       - *Postup:* `...` *(podle typu – měření napětí na aktivovaném vstupu/výstupu nebo kontinuity/impedance při vypnutém napájení, hroty na příslušných svorkách I/O a referenční GND)*
-    - **E. Měření napětí 230 V AC pomocí DC rozsahu (!!! Tento úkol provádějte pouze s vyučujícím !!!):**
-	   - *Postup:* `...` *(zařízení pod napětím, multimetr nastaven na rozsah **1000 V DC**, hroty bezpečně připojeny na fázový a nulový vodič / L–N. Multimetr měří střední hodnotu, proto ukáže přibližně **0 V**.)*
-	   - *Jaké riziko z toho vyplývá při následné práci na zařízení:* `...`
-
-3. **Diagnostika v programovacím prostředí Teco Mosaic:**
-   - K jakému diagnostickému účelu slouží níže uvedené nástroje prostředí Mosaic a jaká jsou jejich bezpečnostní rizika:
-     - **Nástroj Watch / Sledování proměnných (Inspektor):**
-       - *Účel:* `...`
-     - **Funkce Force (Vnucení hodnoty vstupu / výstupu):**
-       - *Co přesně funkce provede:* `...`
-       - :warning: **Provozní a bezpečnostní riziko funkce Force:** Proč je použití funkce Force během ostrého provozu s přítomností lidské obsluhy zakázáno? `...`
-     - **Systémový diagnostický log (Chybový protokol PLC v Mosaicu):**
-       - *Jaké informace v něm technik vyčte:* `...` *(např. restart CPU, výpadek sběrnice TCL2, chyba dělení nulou)*
-
-> **Kritéria hodnocení úlohy 4 (bodování na známky):**
-> - :bangbang: **Odborná správnost interpretace stavů a hlášení PLC (30 %):** Bezchybné vysvětlení indikace LED (RUN, HALT, ERR) a práce s diagnostickým hlášením v prostředí Mosaic.
-> - :bangbang: **Metodika a bezpečnost měření multimetrem (35 %):** Správná volba měřicí funkce (napětí DC vs. odpor/kontinuita vs. proud v sérii), uvědomění si nutnosti odpojení napájení při měření odporu kontaktů relé.
-> - :bangbang: **Bezpečnostní úroveň práce v prostředí Mosaic (35 %):** Správné vysvětlení funkce Force, jejího rozdílu oproti pouhému zápisu proměnné a kritické zhodnocení rizik nekontrolovaného sepnutí pohonů.
-
-> :key: **Vysvětlení pojmů a odborné zdroje:**
-> - **Prostředí Mosaic:** Integrované vývojové prostředí (**IDE**) pro programování, konfiguraci, simulaci a online diagnostiku řídicích systémů Tecomat.
-> - **Vnucení proměnné (Force):** Diagnostický režim, kdy je hodnota proměnné v procesním obrazu PLC natvrdo uzamčena na zvolenou úroveň (log. 0 nebo 1) bez ohledu na reálný stav fyzické svorky či algoritmus programu.
-> - **Spečení kontaktů relé (Contact Welding):** Poruchový stav elektromechanického relé způsobený elektrickým obloukem při vypínání indukční zátěže nebo proudovým nárazem, kdy dojde k natavení a trvalému mechanickému spojení spínacích kontaktů.
->
-> *Bibliografické citace dle normy ČSN ISO 690:*
-> - TECO A.S. *Vývojové prostředí Mosaic: Uživatelská příručka a diagnostika* [online]. Kolín: Teco a.s., 2024 [cit. 2026-09-20]. Dostupné z: https://wiki.tecomat.cz/
-
-<details>
-<summary> :bulb: Tip pro měření proudové smyčky 4–20 mA: </summary>
-<p>Pamatujte, že proud se měří <strong>v sérii</strong> s obvodem (musíte rozpojit svorku a multimetr zapojit jako ampérmetr do cesty proudu), zatímco napětí se měří <strong>paralelně</strong>. Pokud má PLC interní bočník (např. 250 Ω nebo 500 Ω), lze proud měřit nepřímo jako úbytek napětí na tomto odporu bez nutnosti rozpojovat vodiče (dle Ohmova zákona).</p>
-</details>
-
-:star2: **Bonusová otázka k úloze 4:**
-Co se stane v řídicím systému Tecomat Foxtrot, pokud na sběrnici TCL2 omylem nastavíte dvěma různým periferním modulům stejnou hardwarovou adresu (např. otočným přepínačem adresy), a jak tuto kolizi indikuje centrální jednotka v diagnostice?
-
-*Vaše odpověď:*
-`...`
+| Signalizační prvek na PLC | Stav (barva / svit) | Provozní význam (co stav znamená pro servisního technika) |
+| :--- | :--- | :--- |
+| **RUN** | Zelená, trvale svítí | Uživatelský program v PLC běží v normálním cyklickém režimu. |
+| **HALT / STOP** | Žlutá / oranžová, svítí | Vykonávání uživatelského programu je zastaveno (PLC je v režimu STOP). Výstupy jsou bezpečně shozeny. |
+| **ERR / FAULT** | Červená, bliká | Detekována méně závažná nebo softwarová chyba (např. chyba komunikace na sběrnici, ztráta periferního modulu, slabá záložní baterie/kondenzátor). Program může dál běžet, ale vyžaduje pozornost. |
+| **ERR / FAULT** | Červená, trvale svítí | Kritická hardwarová nebo systémová chyba (Fatal Error). Vývojový cyklus programu byl okamžitě zastaven operačním systémem (např. chyba paměti, hardwarový selhání procesoru,Watchdog). |
+| **ETH (Link/Act)** | Zelená/žlutá, bliká | Fyzické připojení k síti Ethernet je aktivní (Link) a v daný okamžik probíhá přenos dat (Activity) mezi PLC a okolím (PC, SCADA, apod.). |
 
 ---
+
+#### Troubleshooting v elektrickém zapojení pomocí digitálního multimetru
+
+**A. Detekce tvrdého zkratu mezi svorkami +24 V DC a 0 V (GND) před zapnutím jističe:**
+*   **Postup:** Hlavní jistič a jistič zdroje musí být **zcela vypnuté, zařízení bez napětí**. Na multimetru nastavte veličinu **odporu (rozsah $200\ \Omega$)** nebo **test kontinuity (propínavost/bzučák)**. Černý hrot připojte na svorku `0 V (GND)`, červený hrot na svorku `+24 V DC`. Pokud multimetr pípá nebo ukazuje hodnotu blízkou $0\ \Omega$ (zkrat), je v zapojení nebo v některé periférii tvrdý zkrat, který by po zapnutí jističe způsobil okamžité přetížení zdroje či destrukci prvků.
+
+**B. Ověření spečených kontaktů výstupního relé DO při vypnutém napájení řízení:**
+*   **Postup:** Celý rozvaděč musí být **zcela bez napětí**. Odpojte (odšroubujte) vodiče vedoucí z testovaných reléových svorek (např. výstup spínající stykač topení), aby se vyloučil vliv parazitních obvodů zátěže. Multimetr přepněte na **test kontinuity/akustický signál**. Hroty přiložte přímo na příslušnou dvojici svorek reléového výstupu (např. svorky spínacího kontaktu). Pokud multimetr pípá/indikuje sepnuto, přestože je PLC bez napájení a výstup má být rozepnut, kontakt relé je **mechanicky spečený** a modul se musí opravit/vyměnit.
+
+**C. Diagnostika napájecího zdroje a napájení PLC (ověření správného napětí 24 V DC):**
+*   **Postup:** Zařízení zapněte **pod napětí**. Na multimetru navolte měření **stejnosměrného napětí (DC)**, zvolte vhodný rozsah (např. **$20\ \text{V}$ nebo $200\ \text{V}$** podle typu přístroje). Černý hrot COM přitiskněte na referenční svorku `0 V (GND)` a červený hrot na napájecí svorku `+24 V DC` na zdroji nebo napájecím konektoru PLC. Multimetr musí ukázat stabilní hodnotu v toleranci (typicky $24,0\ \text{V}$ až $24,4\ \text{V}$). Pro hrubou kontrolu zvlnění (ripple) lze multimetr krátce přepnout na AC rozsah; hodnota střídavé složky by měla být minimální (v řádu desítek mV).
+
+**D. Diagnostika vstupů a výstupů PLC (ověření napětí / kontinuity na DI/DO):**
+*   **Postup:** Zařízení je **pod napětím**. Multimetr je nastaven na rozsah **DC napětí ($20\ \text{V} / 200\ \text{V}$)**. Černý hrot držte pevně na systémové svorce `0 V (GND)`. Při diagnostice **DI** přiložte červený hrot na signálovou svorku daného vstupu v momentě, kdy je snímač fyzicky aktivován – musíte naměřit logickou „1“ (typicky $>15\ \text{V}$ DC). Při diagnostice **tranzistorového DO** vynutíte nebo softwarově aktivujete výstup a měříte napětí na svorce výstupu vůči `0 V` – tranzistor musí sepnout a přivést na svorku plný potenciál $+24\ \text{V}$ DC.
+
+**E. Měření napětí 230 V AC pomocí DC rozsahu (!!! Pouze s vyučujícím !!!):**
+*   **Postup:** Zařízení je pod napětím. Multimetr je z důvodu lidské chyby/simulace omylem nastaven na vysoký rozsah **$1000\ \text{V}$ DC**. Hroty jsou bezpečně připojeny na fázový a nulový vodič (L–N) sítě 230 V AC. Jelikož multimetr v DC režimu integruje a měří střední hodnotu napětí (která je u symetrického střídavého sinusového průběhu nulová), přístroj ukáže hodnotu **přibližně $0\ \text{V}$**.
+*   **Jaké riziko z toho vyplývá při následné práci na zařízení:** Technik podlehne falešnému pocitu bezpečí, že vodiče jsou bez napětí (odpojené), přestože je na nich přítomno životu nebezpečné střídavé napětí $230\ \text{V}$ AC. Při následném dotyku rukou nebo zkratu nástrojem dojde k **těžkému úrazu elektrickým proudem** nebo elektrickému oblouku.
+
+---
+
+#### Diagnostika v programovacím prostředí Teco Mosaic
+
+*   **Nástroj Watch / Sledování proměnných (Inspektor):**
+    *   **Účel:** Slouží k online sledování reálných hodnot zvolených proměnných, registrů a stavů I/O přímo z běžícího procesoru PLC v reálném čase. Používá se pro ladění programové logiky bez zásahu do chodu aplikace.
+*   **Funkce Force (Vnucení hodnoty vstupu / výstupu):**
+    *   **Co přesně funkce provede:** Natvrdo přepíše hodnotu v procesním obrazu vstupů (PII) nebo výstupů (PIQ) na uživatelem definovanou úroveň (0 nebo 1) a zablokuje její aktualizaci. PLC ignoruje jak reálný fyzický elektrický stav na svorce (u vstupů), tak instrukce běžícího programu (u výstupů).
+    *   **⚠️ Provozní a bezpečnostní riziko funkce Force:** Vnucením výstupu může dojít k okamžitému a nečekanému spuštění motoru, pohonu, ventilu nebo hydraulického lisu bez ohledu na to, zda jsou splněny softwarové bezpečnostní vazby (např. softwarové koncové spínače). Pokud se v pracovním prostoru stroje nachází lidská obsluha, hrozí riziko **těžkého zranění, zachycení strojem nebo usmrcení**, stejně jako rozsáhlé mechanické poškození technologické linky.
+*   **Systémový diagnostický log (Chybový protokol PLC v Mosaicu):**
+    *   **Jaké informace v něm technik vyčte:** Chronologický přehled o systémových událostech a poruchách, jako je přesný čas a důvod restartu CPU, ztráta nebo obnova komunikace na systémových sběrnicích (TCL2 colision/timeout), chybová hlášení běhového prostředí (např. kritické dělení nulou, index pole mimo rozsah) nebo pokusy o neoprávněný přístup k webserveru.
+
+---
+
+#### 🌟 Bonusová otázka k úloze 4: Kolize stejných HW adres na sběrnici TCL2
+
+**Odpověď:**
+Pokud se na jedné sběrnici TCL2 (fyzická vrstva RS-485) vyskytnou dva periferní moduly se shodně nastavenou hardwarovou adresou, dojde k **fyzické kolizi na sběrnici**. V momentě, kdy centrální jednotka (Master) odešle dotaz na tuto konkrétní adresu, začnou oba moduly (Slaves) odpovídat a vysílat data do linky ve stejný čas. Tím dojde k vzájemnému přebití elektrických signálů a deformaci datových rámců.
+
+**Indikace kolize v systému a diagnostice:**
+1.  **Chování systému:** Centrální jednotka nedokáže korektně přečíst data ani z jednoho z těchto modulů. V procesním obrazu se tyto periferie začnou cyklicky jevit jako odpojené (výpadky komunikace).
+2.  **Indikace na PLC:** Na centrální jednotce začne **červená kontrolka ERR blikat**, což signalizuje nesmrtelnou, avšak provozní chybu komunikace periferií.
+3.  **V diagnostice prostředí Mosaic (System Log / PLC Status):** V chybovém protokolu a ve správci konfigurace hardwaru (např. v oknech online stavu sběrnice) se objeví hlášení typu `TCL2 Communication Timeout`, `CRC Error` nebo status indikující neustálé selhání rámců na daných adresách periferií. Sběrnicový subsystém bude hlásit ztrátu paketů z dané adresy z důvodu nečitelnosti odpovědí.
 
 ### ### 3. Inženýrská konfigurace funkční sestavy PLC Teco a proudová bilance
 
