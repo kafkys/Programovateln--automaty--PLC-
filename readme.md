@@ -163,83 +163,59 @@ V jakých jednotkách udává norma **ČSN EN 60529** odolnost proti vniknutí p
 
 ### 3. Inženýrská konfigurace funkční sestavy PLC Teco a proudová bilance
 
-*Časová dotace: 25–30 minut | :bangbang: Klasifikovaná inženýrská úloha na známky*
+#### Konfigurace komponent z katalogu Teco
 
-Jste v roli projektanta automatizačních systémů. Zákazník požaduje navrhnout funkční modulární řídicí systém postavený na platformě **Tecomat Foxtrot 2** (případně Tecomat TC800) od společnosti **Teco a.s.** (využijte oficiální dokumentaci [wiki.tecomat.cz](https://wiki.tecomat.cz/) nebo konfigurátor Teco) pro zadanou technologickou linku.
+| Pozice | Typ modulu / komponenta | Přesné typové označení Teco | Objednací číslo (Part No.) | Pokryté vstupy a výstupy (DI / DO / AI / PWM / relé) |
+| :--- | :--- | :--- | :--- | :--- |
+| **1** | Spínaný napájecí zdroj 24 V DC na DIN lištu | **PS2-60/27** | TXN 102 12 | Napájení centrály, rozšiřujících modulů a napájených polem snímačů 24 V DC / 2,2 A (integrovaný oddělovač sběrnice CIB) |
+| **2** | Centrální jednotka (CPU) | **CP-2007** | TXI 120 07 | Obsahuje 14× univerzální vstup (využito: 7× AI pro čidla a 7× DI), 10× reléový výstup (využito: 3× relé), sběrnice TCL2, CIB, Ethernet |
+| **3** | Rozšiřující modul 1 (sběrnice TCL2) | **IB-1301** | TXI 113 01 | Obsahuje 12× digitální vstup (DI 24 V DC) pro pokrytí zbývající části indukčních a optických snímačů |
+| **4** | Rozšiřující modul 2 (sběrnice TCL2) | **IB-1301** | TXI 113 01 | Obsahuje 12× digitální vstup (DI 24 V DC) pro dosažení plné kapacity a potřebné projektové rezervy |
+| **5** | Rozšiřující modul 3 (sběrnice TCL2) | **OS-1401** | TXI 114 01 | Obsahuje 12× polovodičový tranzistorový výstup 24 V DC / 0,5 A (využito: 4× DO s podporou PWM + 2× standardní DO) |
+| **6** | Zakončení sběrnice | **Zakončovací člen TCL2** | — | Pasivní prvek (odpor 120 Ω) pro správnou terminaci sběrnice RS-485 |
 
-#### Požadovaná I/O bilance technologie:
-- **23× digitální vstup (DI 24 V DC)** – indukční koncové spínače a optické snímače polohy.
-- **7× analogový vstup (AI)** – z toho 5× proudový signál 4–20 mA (tlaková čidla a hladinoměry) a 2× přímé měření teploty odporovým čidlem PT100/Pt1000.
-- **4× rychlý tranzistorový výstup s PWM (DO PWM 24 V DC / 0,5 A)** – pro přesné dávkovací ventily a regulaci výkonu.
-- **2× standardní tranzistorový výstup (DO 24 V DC)** – signalizační sloupky a stavové majáky.
-- **3× reléový výstup (DO relé, bezpotenciálový kontakt min. 230 V AC / 3 A)** – spínání stykačů topných těles.
-- **Systémová sběrnice** s možností připojení dalších decentralizovaných periferií (např. TCL2 nebo CIB).
+---
 
-#### Ukázka možného přístupu k řešení:
-> *Příklad postupu návrhu sestavy Teco:*
-> 1. *Základní centrální jednotka:* Volba např. **CP-2007** (obsahuje 14 univerzálních vstupů konfigurovatelných jako DI nebo AI pro odporová čidla i proud 4–20 mA, 10 reléových výstupů a 2 analogové výstupy s funkcí PWM, vestavěný Ethernet a sběrnice TCL2 + CIB).
-> 2. *Rozšíření chybějících I/O po systémové sběrnici TCL2:* Přidání periferií z řady Foxtrot:
->    - Např. modul binárních vstupů **IB-1301** (12× DI 24 V DC) pro pokrytí zbývajících binárních vstupů.
->    - Např. modul binárních výstupů **OS-1401** (12× polovodičový výstup 24 V DC) pro rychlé výstupy a PWM.
-> 3. *Kalkulace rezervy:* Přepočet celkových kapacit na požadavek technologie (minimální rezerva 15–20 %).
-
-#### Váš úkol:
-
-1. **Konfigurace komponent z katalogu Teco (vyplňte návrhovou tabulku):**
-
-| Pozice | Typ modulu / komponenta                     | Přesné typové označení Teco           | Objednací číslo (Part No.) | Pokryté vstupy a výstupy (DI / DO / AI / PWM / relé) |
-| :----- | :------------------------------------------ | :------------------------------------ | :------------------------- | :--------------------------------------------------- |
-| **1**  | Spínaný napájecí zdroj 24 V DC na DIN lištu | `...` *(např. PS2-60/27)*             | `...`                      | Napájení centrály a senzorů 24 V DC                  |
-| **2**  | Centrální jednotka (CPU)                    | `...` *(např. CP-2007 nebo CP-2005)*  | `...`                      | `...`                                                |
-| **3**  | Rozšiřující modul 1 (sběrnice TCL2)         | `...` *(např. IB-1301)*               | `...`                      | `...`                                                |
-| **4**  | Rozšiřující modul 2 (sběrnice TCL2)         | `...` *(např. OS-1401)*               | `...`                      | `...`                                                |
-| **5**  | Případný další submodul / zakončení         | `...` *(např. zakončovací člen TCL2)* | `...`                      | `...`                                                |
-
-2. **Vyhodnocení I/O bilance a projektové rezervy:**
-   - Doplňte počty a vypočítejte výslednou rezervu pro budoucí rozšíření linky:
+#### Vyhodnocení I/O bilance a projektové rezervy
 
 | Typ signálu | Požadavek linky | Celková kapacita navržené sestavy Teco | Rezerva (počet volných svorek) | Výsledná rezerva v % |
 | :--- | :--- | :--- | :--- | :--- |
-| **Digitální vstupy (DI)** | 23 | `...` | `...` | `... %` |
-| **Analogové vstupy (AI: 4–20mA, PT)**| 7 | `...` | `...` | `... %` |
-| **Tranzistorové výstupy (DO tranzistor + PWM)** | 6 (4 PWM + 2 DO)| `...` | `...` | `... %` |
-| **Reléové výstupy (DO relé 230 V)**| 3 | `...` | `...` | `... %` |
+| **Digitální vstupy (DI)** | 23 | 31 *(7 na CPU + 24 na IB-1301)* | 8 | **25,8 %** |
+| **Analogové vstupy (AI: 4–20mA, PT)** | 7 | 7 *(v rámci UI na CPU)* | 0 | **0,0 %** *(Rozšíření možné dokoupením modulů řady AI-13xx)* |
+| **Tranzistorové výstupy (DO tranzistor + PWM)** | 6 | 12 *(na OS-1401)* | 6 | **50,0 %** |
+| **Reléové výstupy (DO relé 230 V)** | 3 | 10 *(na CPU)* | 7 | **70,0 %** |
 
-3. **Proudová bilance a dimenzování napájecího zdroje 24 V DC:**
-   - Vypočtěte proudovou spotřebu sestavy na hladině 24 V DC:
-     - Vlastní příkon CPU a rozšiřujících modulů (dle datasheetů Teco): `...` W / 24 V = `...` A
-     - Odběr napájených snímačů DI (23 snímačů × cca 10 mA): `...` A
-     - Odběr zátěží na tranzistorových výstupech se soudobostí $k_s = 0{,}7$: `...` A
-     - **Celkový špičkový proud:** `...` A
-     - Jaký napájecí zdroj 24 V DC z nabídky Teco / Mean Well zvolíte (včetně doporučené rezervy 25 %)?
-       - *Zvolený zdroj a jmenovitý proud:* `...`
-    - Navrhněte alternativu tohoto zdroje od jiného výrobce: `...`
-
-> **Kritéria hodnocení úlohy 3 (bodování na známky):**
-> - :bangbang: **Správnost technického výběru a kompatibilita systému Teco (40 %):** Všechny zvolené moduly existují v portfoliu Teco a.s., jsou vzájemně kompatibilní (sběrnice TCL2/CIB) a plně pokrývají zadané signály včetně specifických požadavků (odporové měření PT100/Pt1000, 4–20 mA a rychlé výstupy PWM).
-> - :bangbang: **I/O bilance a projektová rezerva (30 %):** Korektní výpočet rezervy pro budoucí rozšíření linky (doporučená rezerva min. 15–20 %).
-> - :bangbang: **Dimenzování napájecího zdroje (30 %):** Správná kalkulace proudové zátěže 24 V DC se započtením soudobosti a zdůvodnění volby zdroje.
-
-> :key: **Vysvětlení pojmů a odborné zdroje:**
-> - **Univerzální vstupy (UI / AI / DI):** Konstrukční řešení vstupních obvodů Teco Foxtrot, kdy lze jednotlivé svorky softwarově v konfigurátoru nastavit buď jako bezpotenciálový binární vstup (kontakty, snímače), nebo jako analogový vstup (napěťový 0–10 V, proudový 4–20 mA, či přímé měření teplotních odporových čidel Pt1000/Ni1000).
-> - **Soudobost zátěží ($k_s$):** Statistický koeficient (zpravidla 0,7 až 0,8), který zohledňuje, že v reálném provozu nikdy nesepnou všechny akční členy a ventily v tentýž okamžik na plný proudový výkon.
->
-> *Bibliografické citace dle normy ČSN ISO 690:*
-> - TECO A.S. *Základní modul CP-2007: Technický list a popis svorek* [online]. Kolín: Teco a.s., 2024 [cit. 2026-09-20]. Dostupné z: https://wiki.tecomat.cz/index.php?title=CP-2007
-> - TECO A.S. *Periferní moduly systému Foxtrot na sběrnici TCL2* [online]. Kolín: Teco a.s., 2023 [cit. 2026-09-20]. Dostupné z: https://wiki.tecomat.cz/
-
-<details>
-<summary> :bulb: Tip k analogovým vstupům u Teco Foxtrot: </summary>
-<p>Prozkoumejte zapojení univerzálních vstupů u jednotek CP-2007: Vstupy AI0 až AI5 umožňují přímé připojení odporových čidel (Pt1000, Ni1000) i proudových smyček 4–20 mA (pomocí interních přepojitelných bočníků nebo konfigurace). Tím ušetříte náklady na speciální externí převodníky.</p>
-</details>
-
-:star2: **Bonusová otázka k úloze 3:**
-Jaký je princip zapojení odporového snímače teploty (např. Pt1000) a proč je pro přesné měření na velké vzdálenosti vhodnější použít snímač Pt1000 než Pt100, pokud máme k dispozici pouze standardní 2vodičové vedení?
-
-*Vaše odpověď:*
-`...`
+*Poznámka k celkové koncepci: Sestava bezpečně překračuje minimální požadovanou inženýrskou rezervu 15–20 % u všech kritických binárních tras.*
 
 ---
+
+#### Proudová bilance a dimenzování napájecího zdroje 24 V DC
+
+Výpočet proudové spotřeby řídicího systému a napájených prvků:
+1. **Vlastní příkon CPU a rozšiřujících modulů:** 8,0 W / 24 V = **0,33 A** *(uvažován max. typický odběr CPU CP-2007 a tří modulů na sběrnici TCL2)*
+2. **Odběr napájených snímačů DI:** 23 snímačů × 10 mA = **0,23 A**
+3. **Odběr zátěží na tranzistorových výstupech se soudobostí $k_s = 0,7$:**  
+   *   Maximální statický proudový odběr akčních členů: (4× PWM ventily × 0,5 A) + (2× signalizační DO × 0,1 A) = 2,2 A  
+   *   Započtení koeficientu soudobosti: 2,2 A × 0,7 = **1,54 A**
+4. **Celkový špičkový provozní proud:** 0,33 A + 0,23 A + 1,54 A = **2,10 A**
+
+**Výběr a zdůvodnění napájecího zdroje:**
+*   **Zvolený zdroj a jmenovitý proud:** Teco **PS2-60/27** (jmenovitý výstupní proud **2,2 A** při trvalém zatížení, špičkově až 2,4 A). 
+*   **Zdůvodnění:** Provozní špička sestavy činí 2,10 A, což zvolený 60W zdroj PS2-60/27 bezpečně pokrývá. Výhodou tohoto systémového zdroje Teco je navíc integrovaný impedanční oddělovač pro sběrnici CIB, což projektantovi šetří náklady a místo v rozvaděči při budoucím nasazení domovní/budovní automatizace. Pro vyšší výkonovou rezervu nebo při navýšení počtu zátěží pole lze použít zdroj **PS2-100/24** (4,2 A).
+*   **Alternativa od jiného výrobce:** Průmyslový na DIN lištu montovatelný zdroj **Mean Well MDR-60-24** (24 V DC, 2,5 A, 60 W), případně prémiový **Phoenix Contact STEP-PS/1AC/24DC/2.5** (2,5 A).
+
+---
+
+#### 🌟 Bonusová otázka k úloze 3: Výhoda Pt1000 oproti Pt100 ve 2vodičovém zapojení
+
+**Odpověď:**
+Principem odporového snímače je změna jeho elektrického odporu v závislosti na okolní teplotě. Při **2vodičovém zapojení** se k vnitřnímu odporu samotného čidla přičítá i parazitní odpor přívodních vodičů, což vnáší do měření systematickou chybu (zkreslení výsledné teploty směrem nahoru).
+
+Důvod, proč je **Pt1000** výrazně vhodnější než Pt100 na delší vzdálenosti, spočívá v poměru základního odporu čidla k odporu vedení:
+*   Snímač **Pt100** má při 0 °C odpor pouhých **100 Ω**. Změna odporu činí přibližně **0,385 Ω / °C**. Pokud má přívodní kabel odpor např. 2 Ω, způsobí to chybu měření o více než **5 °C**.
+*   Snímač **Pt1000** má při 0 °C základní odpor **1000 Ω**. Změna odporu činí **3,85 Ω / °C**. Stejný parazitní odpor vedení (2 Ω) zde představuje chybu pouze cca **0,5 °C**.
+
+**Závěr:** U čidla Pt1000 je vliv parazitního odporu přívodního kabelu v celkovém naměřeném odporu procentuálně desetinásobně menší, což umožňuje realizovat přesné měření i přes standardní dlouhé 2vodičové vedení bez nutnosti softwarové kompenzace nebo přechodu na nákladnější 3vodičové či 4vodičové zapojení.
 
 ### 4. Provozní diagnostika PLC, měření multimetrem a troubleshooting v IDE Mosaic
 
