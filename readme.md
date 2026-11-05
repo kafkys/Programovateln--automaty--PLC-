@@ -172,7 +172,8 @@ V jakých jednotkách udává norma **ČSN EN 60529** odolnost proti vniknutí p
 | **3** | Rozšiřující modul 1 (sběrnice TCL2) | **IB-1301** | TXI 113 01 | Obsahuje 12× digitální vstup (DI 24 V DC) pro pokrytí zbývající části indukčních a optických snímačů |
 | **4** | Rozšiřující modul 2 (sběrnice TCL2) | **IB-1301** | TXI 113 01 | Obsahuje 12× digitální vstup (DI 24 V DC) pro dosažení plné kapacity a potřebné projektové rezervy |
 | **5** | Rozšiřující modul 3 (sběrnice TCL2) | **OS-1401** | TXI 114 01 | Obsahuje 12× polovodičový tranzistorový výstup 24 V DC / 0,5 A (využito: 4× DO s podporou PWM + 2× standardní DO) |
-| **6** | Zakončení sběrnice | **Zakončovací člen TCL2** | — | Pasivní prvek (odpor 120 Ω) pro správnou terminaci sběrnice RS-485 |
+| **6** | Zakončení sběrnice | **Zakončovací člen TCL2** | •  TXN 102 90
+ | Pasivní prvek (odpor 120 Ω) pro správnou terminaci sběrnice RS-485 |
 
 ---
 
